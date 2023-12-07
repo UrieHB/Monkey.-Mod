@@ -1,14 +1,14 @@
-// Name: Monitors Plus
+// Name: Variables Expanded
 // ID: DICandSPmonitorsPlus
-// Description: Expansion of Monitor Types and Variables.
+// Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
+
+// Version 1.2.3 (Duplicate Ver)
 
 (function (Scratch) {
   "use strict";
 
-  if (!Scratch.extensions.unsandboxed) {
-    throw new Error("Monitors Plus must run unsandboxed!");
-  }
+  if (!Scratch.extensions.unsandboxed) throw new Error("Variables Expanded must run unsandboxed!");
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
@@ -50,26 +50,24 @@
       this.buttonName = "";
       this.monitorsUpdateListeners = [];
     }
-
     getInfo() {
       return {
         id: "DICandSPmonitorsPlus",
-        name: "Monitors+",
+        name: "Variables Expanded",
         color1: "#FF8C1A",
         color2: "#e67e17",
         color3: "#cc7015",
         menuIconURI,
         blocks: [
           {
-            func: "alertWarning",
+            func: "notify",
             blockType: Scratch.BlockType.BUTTON,
-            text: "Crash Warning",
+            text: "Editor Debugging",
           },
           {
-            opcode: "isShowing",
+            opcode: "exists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [VARIABLE] showing?",
-            hideFromPalette: !this.variablesExist(),
+            text: "does [VARIABLE] exist?",
             arguments: {
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
@@ -78,10 +76,21 @@
             },
           },
           {
+            opcode: "isShowing",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "is [VARIABLE] showing?",
+            arguments: {
+              VARIABLE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "variableMenu",
+              },
+            },
+          },
+          "---",
+          {
             opcode: "setColor",
             blockType: Scratch.BlockType.COMMAND,
             text: "set [VARIABLE] to [COLOR]",
-            hideFromPalette: !this.variablesExist(),
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
@@ -89,7 +98,33 @@
               },
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "my variable",
+                menu: "variableMenu",
+              },
+            },
+          },
+          {
+            opcode: "setString",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set [VARIABLE] to [STRING]",
+            arguments: {
+              STRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 0
+              },
+              VARIABLE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "variableMenu",
+              },
+            },
+          },
+          {
+            opcode: "reportVal",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "value of [VARIABLE]",
+            arguments: {
+              VARIABLE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "variableMenu",
               },
             },
           },
@@ -98,11 +133,10 @@
             opcode: "setVariableToType",
             blockType: Scratch.BlockType.COMMAND,
             text: "set [VARIABLE] monitor type to [TYPE]",
-            hideFromPalette: !this.variablesExist(),
             arguments: {
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "my variable",
+                menu: "variableMenu",
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -114,24 +148,49 @@
             opcode: "getVariableType",
             blockType: Scratch.BlockType.REPORTER,
             text: "monitor type of [VARIABLE]",
-            hideFromPalette: !this.variablesExist(),
             arguments: {
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "my variable",
+                menu: "variableMenu",
               },
+            },
+          },
+          "---",
+          {
+            opcode: "makeVariable",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "create variable named [VARIABLE] [TYPE]",
+            arguments: {
+              VARIABLE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "my variable 2",
+              },
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "variableTypeCreate",
+                defaultValue: "globally",
+              }
+            },
+          },
+          {
+            opcode: "deleteVariable",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "delete variable named [VARIABLE]",
+            arguments: {
+              VARIABLE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "my variable 2",
+              }
             },
           },
           {
             blockType: Scratch.BlockType.XML,
             xml: "<sep gap=\"6\"/><label text=\"Sliders\"/><sep gap=\"-12\"/><sep gap=\"12\"/>",
-            hideFromPalette: !this.variablesExist(),
           },
           {
             opcode: "setSliderMinMaxOfVaribleTo",
             blockType: Scratch.BlockType.COMMAND,
             text: "set slider min [MIN] and max [MAX] of [VARIABLE]",
-            hideFromPalette: !this.variablesExist(),
             arguments: {
               MIN: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -143,7 +202,7 @@
               },
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "my variable",
+                menu: "variableMenu",
               },
             },
           },
@@ -151,7 +210,6 @@
             opcode: "sliderMinMaxOfVarible",
             blockType: Scratch.BlockType.REPORTER,
             text: "slider [MINMAX] of [VARIABLE]",
-            hideFromPalette: !this.variablesExist(),
             arguments: {
               MINMAX: {
                 type: Scratch.ArgumentType.STRING,
@@ -159,20 +217,18 @@
               },
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "my variable",
+                menu: "variableMenu",
               },
             },
           },
           {
             blockType: Scratch.BlockType.XML,
             xml: "<sep gap=\"6\"/><label text=\"Positioning\"/><sep gap=\"-12\"/><sep gap=\"12\"/>",
-            hideFromPalette: !this.variablesExist(),
           },
           {
             opcode: "setPosition",
             blockType: Scratch.BlockType.COMMAND,
             text: "set position of [VARIABLE] to x: [X] y: [Y]",
-            hideFromPalette: !this.variablesExist(),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -184,7 +240,7 @@
               },
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "my variable",
+                menu: "variableMenu",
               },
             },
           },
@@ -192,11 +248,10 @@
             opcode: "currentPos",
             blockType: Scratch.BlockType.REPORTER,
             text: "current [POSITION] of [VARIABLE]",
-            hideFromPalette: !this.variablesExist(),
             arguments: {
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "my variable",
+                menu: "variableMenu",
               },
               POSITION: {
                 type: Scratch.ArgumentType.STRING,
@@ -208,17 +263,15 @@
           {
             blockType: Scratch.BlockType.XML,
             xml: "<sep gap=\"6\"/><label text=\"Buttons\"/><sep gap=\"-12\"/><sep gap=\"12\"/>",
-            hideFromPalette: !this.variablesExist(),
           },
           {
             opcode: "whenButtonPressed",
             blockType: Scratch.BlockType.HAT,
             text: "when [VARIABLE] button pressed",
-            hideFromPalette: !this.variablesExist(),
             arguments: {
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "my variable",
+                menu: "variableMenu",
               },
             },
           },
@@ -227,24 +280,21 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "is [VARIABLE] button pressed?",
             disableMonitor: true,
-            hideFromPalette: !this.variablesExist(),
             arguments: {
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "my variable",
+                menu: "variableMenu",
               },
             },
           },
           {
             blockType: Scratch.BlockType.XML,
             xml: "<sep gap=\"6\"/><label text=\"Effects\"/><sep gap=\"-12\"/><sep gap=\"12\"/>",
-            hideFromPalette: !this.variablesExist(),
           },
           {
             opcode: "setDisplay",
             blockType: Scratch.BlockType.COMMAND,
             text: "set display name of [VARIABLE] to [NAME]",
-            hideFromPalette: !this.variablesExist(),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -252,7 +302,7 @@
               },
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "my variable",
+                menu: "variableMenu",
               },
             },
           },
@@ -260,7 +310,6 @@
             opcode: "setFont",
             blockType: Scratch.BlockType.COMMAND,
             text: "set font of [VARIABLE] to [FONT]",
-            hideFromPalette: !this.variablesExist(),
             arguments: {
               FONT: {
                 type: Scratch.ArgumentType.STRING,
@@ -269,7 +318,7 @@
               },
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "my variable",
+                menu: "variableMenu",
               },
             },
           },
@@ -278,11 +327,10 @@
             opcode: "resetEffect",
             blockType: Scratch.BlockType.COMMAND,
             text: "reset effects of [VARIABLE]",
-            hideFromPalette: !this.variablesExist(),
             arguments: {
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "my variable",
+                menu: "variableMenu",
               },
             },
           },
@@ -290,11 +338,10 @@
             opcode: "setEffect",
             blockType: Scratch.BlockType.COMMAND,
             text: "set [EFFECT] of [VARIABLE] to [AMOUNT]",
-            hideFromPalette: !this.variablesExist(),
             arguments: {
               AMOUNT: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
+                defaultValue: 5,
               },
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
@@ -303,7 +350,7 @@
               },
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "my variable",
+                menu: "variableMenu",
               },
             },
           },
@@ -311,11 +358,10 @@
             opcode: "currentEffect",
             blockType: Scratch.BlockType.REPORTER,
             text: "current [EFFECT] of [VARIABLE]",
-            hideFromPalette: !this.variablesExist(),
             arguments: {
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "my variable",
+                menu: "variableMenu",
               },
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
@@ -324,11 +370,6 @@
               },
             },
           },
-          {
-            blockType: Scratch.BlockType.XML,
-            xml: "<sep gap=\"12\"/><label text=\"No Variables Exist!\"/><sep gap=\"-6\"/><sep gap=\"24\"/>",
-            hideFromPalette: this.variablesExist(),
-          }
         ],
         menus: {
           variablesTypeMenu: {
@@ -346,20 +387,19 @@
               "audio"
             ],
           },
-          sliderMaxMinMenu: {
-            acceptReporters: false,
-            items: ["min", "max"],
+          sliderMaxMinMenu: ["min", "max"],
+          variableMenu: {
+            acceptReporters: true,
+            items: "getVariables",
           },
           allFonts: {
             acceptReporters: true,
             items: "getFonts",
           },
-          POSITIONS: {
-            acceptReporters: false,
-            items: ["x", "y"],
-          },
+          variableTypeCreate: ["globally", "for this sprite only"],
+          POSITIONS: ["x", "y"],
           EFFECTS: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: [
               "blur",
               "saturation",
@@ -379,20 +419,23 @@
       }
     }
 
-    alertWarning() {
-      let popup = `WARNING: Monitors+ can easily Crash the Editor (only the Editor). To avoid these crashes:
-      - DO NOT Double Click visible Monitors
-      - DO NOT Right Click and Select visible Monitors popups`;
-      alert(popup);
+    notify() {
+      alert(
+        "Upon Double-Clicking New Monitors, it will open up the Debug Menu" +
+        "\n\nThis feature is only accessible within the Editor and can be reset by using the set monitor block"
+      );
+    }
+
+    getVariables() {
+      const globalVars = Object.values(vm.runtime.getTargetForStage().variables).filter((x) => x.type == "");
+      const localVars = Object.values(vm.editingTarget.variables).filter((x) => x.type == "");
+      const uniqueVars = [...new Set([...globalVars, ...localVars])];
+      if (uniqueVars.length === 0) return ["make a variable"];
+      return uniqueVars.map((i) => (Scratch.Cast.toString(i.name)));
     }
 
     getFonts() {
-      const customFonts = Scratch.vm.runtime.fontManager
-        ? Scratch.vm.runtime.fontManager.getFonts().map((i) => ({
-            text: i.name,
-            value: i.family,
-          }))
-        : [];
+      const customFonts = Scratch.vm.runtime.fontManager ? Scratch.vm.runtime.fontManager.getFonts().map((i) => ({text: i.name, value: i.family})) : [];
       return [
         ...builtInFonts,
         ...customFonts,
@@ -401,155 +444,152 @@
 
     findVariable(variable, sprite) {
       //support for all variable types
-      const name = Scratch.Cast.toString(variable);
       const cloudID = runtime.getTargetForStage().lookupVariableByNameAndType(Scratch.Cast.toString("ÃƒÂ¢Ã‹ÂœÃ‚Â " + variable), "");
-      if (cloudID) {
-        return cloudID.id;
-      }
-
-      const myTarget = sprite.target.id;
+      if (cloudID) return cloudID.id;
       let varFind = "";
       for (const name of Object.getOwnPropertyNames(sprite.target.variables)) {
         varFind = sprite.target.variables[name].name;
-        if (varFind === variable) {
-          return sprite.target.variables[name].id;
-        }
+        if (varFind === variable) return sprite.target.variables[name].id;
       }
       const ID = runtime.getTargetForStage().lookupVariableByNameAndType(variable, "");
-      if (!ID) {
-        return "";
-      }
+      if (!ID) return "";
       return ID.id;
     }
 
-    variablesExist() {
-      // @ts-expect-error - Blockly not typed yet
-      // eslint-disable-next-line no-undef
-      const variables =
-        typeof Blockly === "undefined"
-          ? []
-          : Blockly.getMainWorkspace()
-            .getVariableMap()
-            .getVariablesOfType("")
-            .map((model) => model.name);
-      return !!variables.length;
-    }
-
-    resetFormat(variableId) { 
-      //reset to avoid Site Crashing
+    resetFormat(variableId) {
       runtime.requestUpdateMonitor(new Map([
         ["id", variableId],
         ["visible", false]
       ]));
-
       setTimeout(() => {
         runtime.requestUpdateMonitor(new Map([
           ["id", variableId],
           ["visible", true]
         ]));
-      }, 50);
+      }, 30);
     }
 
-    setVariableToType(args, util) {
-      this.setMonitor(args.VARIABLE, util, args.VARIABLE, args.TYPE);
-    }
+    async setVariableToType(args, util) { await this.setMonitor(args.VARIABLE, util, args.VARIABLE, args.TYPE) }
 
-    setDisplay(args, util) {
+    async setDisplay(args, util) {
       const safeName = xmlEscape(args.NAME);
       const type = this.getMonitor(args.VARIABLE, util);
       let variableId = this.findVariable(args.VARIABLE, util);
-      if (type === "normal readout" || type === "slider" || type === "large readout") {
-        const variableMonitorLabel = document.querySelector(`[data-id="${variableId}"][class*="monitor_"] .monitor_label_ci1ok`);
-        if (variableMonitorLabel) {
-          variableMonitorLabel.textContent = args.NAME;
-        }
+      if (type.includes("readout") || type === "slider") {
+        const variableMonitorLabel = document.querySelector(`[data-id="${variableId}"][class*="monitor"] [class^="monitor_label"]`);
+        if (variableMonitorLabel) variableMonitorLabel.textContent = args.NAME;
       } else {
-        this.setMonitor(args.VARIABLE, util, args.NAME, type);
+        await this.setMonitor(args.VARIABLE, util, args.NAME, type);
       }
     }
 
-    setMonitor(nameID, util, name, type) {
+    async setMonitor(nameID, util, name, type) {
       let variableId = this.findVariable(nameID, util);
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
-      if (!variableMonitor) {
-        return;
+      const oldStyle = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
+      if (type.includes("readout") || type === "slider") {
+        if (!(this.getMonitor(nameID, util).includes("readout") || this.getMonitor(nameID, util) === "slider")) {
+          this.resetFormat(variableId);
+        }
       }
-      let newHTML;
+      if (!type.includes("readout") && type !== "slider") {
+        var state2 = vm.runtime.getMonitorState().get(variableId);
+        vm.runtime.requestUpdateMonitor(state2.set("mode", "default"));
+        let i;
+        await new Promise(resolve => { const wait = () => {
+          if (i) resolve();
+          else {
+            i = runtime.getMonitorState().get(variableId).get("visible");
+            setTimeout(wait, 5);
+          }};
+          wait();
+        });
+      }
+
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
+      if (!variableMonitor) return;
       let typeElement;
       let isHex;
       let variableName = nameID;
       let toggleButtonClickFunction;
+      let container;
 
       const hexColorRegex = /^#([0-9A-F]{3}){1,2}$/i;
       const Vvalue = util.target.lookupOrCreateVariable(nameID, variableName).value;
       const isChecked = Vvalue === "true" || Vvalue === 1 ? true : false;
       variableName = name.replace(/[<>]/g, "");
       this.removeAllMonitorsUpdateListeners();
+      if (type.includes("readout") || type === "slider") {
+        var state = vm.runtime.getMonitorState().get(variableId);
+        vm.runtime.requestUpdateMonitor(state.set("mode", "large"));
+      } else {
+        let oldMonitor = variableMonitor.querySelector(`[class^="monitor_default-monitor"]:not(.monitor_default-monitor_SPnew1)`);
+        if (!oldMonitor) oldMonitor = variableMonitor.querySelector(`[class^="sc-monitor-inner"] [class^="sc-monitor-row"]`);
+        oldMonitor.style.display = "none";
+      }
 
       switch (type) {
         case "large readout":
-          this.resetFormat(variableId);
-          var LState = vm.runtime.getMonitorState().get(variableId);
           state = state.set("mode", "large");
           vm.runtime.requestUpdateMonitor(state);
           break;
         case "slider":
-          this.resetFormat(variableId);
-          var SState = vm.runtime.getMonitorState().get(variableId);
           state = state.set("mode", "slider");
           vm.runtime.requestUpdateMonitor(state);
           break;
         case "text":
-          this.setValue(nameID, "", util);
-          newHTML = `
-            <div class="monitor_default-monitor_2vCcZ">
-              <div class="monitor_row_2y_kM">
-                <div class="monitor_label_ci1ok">${variableName}</div>
-              </div>
-              <div class="monitor_row_2y_kM">
-                <input type="text" id="text_${variableId}" class="monitor_slider_1CHwk no-drag" value="...">
-              </div>
+          if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"`)) {
+            container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"`);
+          } else {
+            container = document.createElement("div");
+            container.className = "monitor_default-monitor_SPnew1";
+            container.setAttribute("style", "padding: 5px 5px 5px 5px");
+          }
+          container.innerHTML = `
+            <div class="monitor_row_2y_kM">
+              <div class="monitor_label_ci1ok">${variableName}</div>
             </div>
-          `;
-
-          variableMonitor.innerHTML = newHTML;
-          this.setValue(nameID, "...", util);
-          typeElement = document.querySelector(`[id="text_${variableId}"]`)
+            <div class="monitor_row_2y_kM">
+              <input type="text" id="text_${variableId}" class="monitor_slider_1CHwk no-drag" value="${Vvalue}">
+            </div>`;
+          variableMonitor.appendChild(container);
+          typeElement = container.querySelector(`[id="text_${variableId}"]`);
           typeElement = removeAllEventListeners(typeElement);
+
           this.addMonitorsUpdateListener(() => {
             const variable = util.target.lookupOrCreateVariable(nameID, nameID);
             typeElement.value = variable.value;
           });
           typeElement.addEventListener("change", function (event) {
             if (event.target && event.target.id.startsWith(`text_${variableId}`)) {
-              const variable = util.target.lookupOrCreateVariable(
-              nameID, nameID);
+              const variable = util.target.lookupOrCreateVariable(nameID, nameID);
               variable.value = typeElement.value;
             }
           });
           break;
         case "checkbox":
-          this.setValue(nameID, isChecked, util);
-          newHTML = `
-            <div class="monitor_default-monitor_2vCcZ">
-              <div class="monitor_row_2y_kM">
-                <input type="checkbox" id="checkbox_${variableId}" class="monitor_slider_1CHwk no-drag" ${isChecked ? "checked" : ""}>
-                <div class="monitor_label_ci1ok">${variableName}</div>
-              </div>
-            </div>
-          `;
-
-          variableMonitor.innerHTML = newHTML;
-          typeElement = document.querySelector(`[id="checkbox_${variableId}"]`)
+          if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
+            container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
+          } else {
+            container = document.createElement("div");
+            container.className = "monitor_default-monitor_SPnew1";
+            container.setAttribute("style", "padding: 5px 5px 5px 5px");
+          }
+          container.innerHTML = `
+            <div class="monitor_row_2y_kM">
+              <input type="checkbox" id="checkbox_${variableId}" class="monitor_slider_1CHwk no-drag" ${isChecked ? "checked" : ""}>
+              <div class="monitor_label_ci1ok">${variableName}</div>
+            </div>`;
+          variableMonitor.appendChild(container);
+          typeElement = container.querySelector(`[id="checkbox_${variableId}"`);
           typeElement = removeAllEventListeners(typeElement);
+
           this.addMonitorsUpdateListener(() => {
             const variable = util.target.lookupOrCreateVariable(nameID, nameID);
             typeElement.checked = variable.value === "false" ? 0 : variable.value;
           });
           typeElement.addEventListener("change", function (event) {
             if (event.target && event.target.id.startsWith(`checkbox_${variableId}`)) {
-              const variable = util.target.lookupOrCreateVariable(
-              nameID, nameID);
+              const variable = util.target.lookupOrCreateVariable(nameID, nameID);
               variable.value = typeElement.checked;
             }
           });
@@ -560,21 +600,25 @@
           } else {
             isHex = "#ff0000";
           }
-          this.setValue(nameID, isHex, util);
-          newHTML = `
-            <div class="monitor_default-monitor_2vCcZ">
-              <div class="monitor_row_2y_kM">
-                <div class="monitor_label_ci1ok">${variableName}</div>
-              </div>
-              <div class="monitor_row_2y_kM">
-                <input type="color" id="color_${variableId}" class="monitor_slider_1CHwk no-drag" value="${isHex}">
-              </div>
-            </div>
-          `;
+          if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
+            container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
+          } else {
+            container = document.createElement("div");
+            container.className = "monitor_default-monitor_SPnew1";
+            container.setAttribute("style", "padding: 5px 5px 5px 5px");
+          }
 
-          variableMonitor.innerHTML = newHTML;
-          typeElement = document.querySelector(`[id="color_${variableId}"]`);
+          container.innerHTML = `
+            <div class="monitor_row_2y_kM">
+              <div class="monitor_label_ci1ok">${variableName}</div>
+            </div>
+            <div class="monitor_row_2y_kM">
+              <input type="color" id="color_${variableId}" class="monitor_slider_1CHwk no-drag" value="${isHex}">
+            </div>`;
+          variableMonitor.appendChild(container);
+          typeElement = container.querySelector(`[id="color_${variableId}"`);
           typeElement = removeAllEventListeners(typeElement);
+
           this.addMonitorsUpdateListener(() => {
             const variable = util.target.lookupOrCreateVariable(nameID, nameID);
             typeElement.value = variable.value;
@@ -587,34 +631,41 @@
           });
           break;
         case "button":
-          newHTML = `
-            <div class="monitor_default-monitor_2vCcZ">
-              <div class="monitor_row_2y_kM">
-                <input type="button" id="button_${variableId}" value="${variableName}" class="monitor_slider_1CHwk no-drag monitor-button">
-              </div>
-            </div>
-          `;
-
-          variableMonitor.innerHTML = newHTML;
-          typeElement = document.querySelector(`[id="button_${variableId}"]`);
+          if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
+            container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
+          } else {
+            container = document.createElement("div");
+            container.className = "monitor_default-monitor_SPnew1";
+            container.setAttribute("style", "padding: 5px 5px 5px 5px");
+          }
+          container.innerHTML = `
+            <div class="monitor_row_2y_kM">
+              <input type="button" id="button_${variableId}" value="${variableName}" class="monitor_slider_1CHwk no-drag monitor-button">
+            </div>`;
+          variableMonitor.appendChild(container);
+          typeElement = container.querySelector(`[id="button_${variableId}"]`);
           toggleButtonClickFunction = () => this.toggleButtonClick(variableId);
           typeElement.onclick = toggleButtonClickFunction;
           typeElement.addEventListener("click", toggleButtonClickFunction);
           break;
         case "file":
-          newHTML = `
-            <div class="monitor_default-monitor_2vCcZ">
-              <div class="monitor_row_2y_kM">
-                <div class="monitor_label_ci1ok">${variableName}</div>
-              </div>
-              <div class="monitor_row_2y_kM">
-                <input type="file" id="file_${variableId}" class="monitor_slider_1CHwk no-drag" value="0">
-              </div>
+          if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
+            container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
+          } else {
+            container = document.createElement("div");
+            container.className = "monitor_default-monitor_SPnew1";
+            container.setAttribute("style", "padding: 5px 5px 5px 5px");
+          }
+          container.innerHTML = `
+            <div class="monitor_row_2y_kM">
+              <div class="monitor_label_ci1ok">${variableName}</div>
             </div>
-          `;
+            <div class="monitor_row_2y_kM">
+              <input type="file" id="file_${variableId}" class="monitor_slider_1CHwk no-drag" value="0">
+            </div>`;
+          variableMonitor.appendChild(container);
 
-          variableMonitor.innerHTML = newHTML;
-          typeElement = document.querySelector(`[id="file_${variableId}"]`)
+          typeElement = container.querySelector(`[id="file_${variableId}"]`);
           typeElement = removeAllEventListeners(typeElement);
           typeElement.addEventListener("change", function (event) {
             if (event.target && event.target.id === `file_${variableId}`) {
@@ -634,50 +685,56 @@
           });
           break;
         case "image":
-          newHTML = `
-            <div class="monitor_default-monitor_2vCcZ">
-              <div class="monitor_row_2y_kM">
-                <div class="monitor_label_ci1ok">${variableName}</div>
-              </div>
-              <div class="monitor_row_2y_kM">
-                 <img src="${Vvalue}" id="image_${variableId}" class="monitor_slider_1CHwk no-drag">
-              </div>
+          if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
+            container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
+          } else {
+            container = document.createElement("div");
+            container.className = "monitor_default-monitor_SPnew1";
+            container.setAttribute("style", "padding: 5px 5px 5px 5px");
+          }
+          container.innerHTML = `
+            <div class="monitor_row_2y_kM">
+              <div class="monitor_label_ci1ok">${variableName}</div>
             </div>
-          `;
-
-          variableMonitor.innerHTML = newHTML;
-          typeElement = document.querySelector(`[id="image_${variableId}"]`);
+            <div class "monitor_row_2y_kM">
+              <img src="${Vvalue}" id="image_${variableId}" class="monitor_slider_1CHwk no-drag">
+            </div>`;
+          variableMonitor.appendChild(container);
+          typeElement = container.querySelector(`[id="image_${variableId}"]`);
           this.addMonitorsUpdateListener(() => {
             const variable = util.target.lookupOrCreateVariable(nameID, nameID);
             typeElement.src = variable.value;
           });
           break;
         case "audio":
-          newHTML = `
-            <div class="monitor_default-monitor_2vCcZ">
-              <div class="monitor_row_2y_kM">
-                <div class="monitor_label_ci1ok">${variableName}</div>
-              </div>
-              <div class="monitor_row_2y_kM">
-                <audio id="audio_${variableId}" class="monitor_audio" src="${Vvalue}" controls></audio>
-              </div>
+          if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
+            container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
+          } else {
+            container = document.createElement("div");
+            container.className = "monitor_default-monitor_SPnew1";
+            container.setAttribute("style", "padding: 5px 5px 5px 5px");
+          }
+          container.innerHTML = `
+            <div class="monitor_row_2y_kM">
+              <div class="monitor_label_ci1ok">${variableName}</div>
             </div>
-          `;
+            <div class="monitor_row_2y_kM">
+              <audio id="audio_${variableId}" class="monitor_audio" src="${Vvalue}" controls></audio>
+            </div>`;
+          variableMonitor.appendChild(container);
 
-          variableMonitor.innerHTML = newHTML;
-          typeElement = document.querySelector(`[id="audio_${variableId}"]`);
+          typeElement = container.querySelector(`[id="audio_${variableId}"]`);
           this.addMonitorsUpdateListener(() => {
             const variable = util.target.lookupOrCreateVariable(nameID, nameID);
             typeElement.src = variable.value;
           });
           break;
-        default: // Handle unknown monitor (default monitor)
-          this.resetFormat(variableId);
-          var state = vm.runtime.getMonitorState().get(variableId);
+        default: // Handle unknown monitor or default monitor
           state = state.set("mode", "default");
           vm.runtime.requestUpdateMonitor(state);
           break;
       }
+      this.reAddDeleted(oldStyle, variableId, nameID, util);
     }
 
     addMonitorsUpdateListener(listener) {
@@ -702,68 +759,41 @@
 
     isButtonPressed(args, util) {
       const variableId = this.findVariable(args.VARIABLE, util);
-      if (!variableId) {
-        return false;
-      }
-      if (variableId === this.buttonName) {
-        return (this.buttonClick);
-      } else {
-        return false;
-      }
+      if (!variableId) return false;
+      return variableId === this.buttonName ? !!this.buttonClick : false;
     }
 
     whenButtonPressed(args, util) {
       const variableId = this.findVariable(args.VARIABLE, util);
-      if (!variableId) {
-        return false;
-      }
-      if (variableId === this.buttonName) {
-        return (this.buttonClick);
-      } else {
-        return false;
-      }
+      if (!variableId) return false;
+      return variableId === this.buttonName ? !!this.buttonClick : false;
     }
 
-    getVariableType(args, util) {
-      return this.getMonitor(args.VARIABLE, util);
-    }
+    getVariableType(args, util) { return this.getMonitor(args.VARIABLE, util) }
 
     getMonitor(variable, util) {
       const variableId = this.findVariable(variable, util);
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
-      if (!variableMonitor) {
-        return "";
-      }
-      if (variableMonitor.querySelector("input[type=\"range\"]")) {
-        return "slider";
-      } else if (variableMonitor.querySelector("input[type=\"text\"]")) {
-        return "text";
-      } else if (variableMonitor.querySelector("input[type=\"checkbox\"]")) {
-        return "checkbox";
-      } else if (variableMonitor.querySelector("input[type=\"color\"]")) {
-        return "color";
-      } else if (variableMonitor.querySelector("input[type=\"button\"]")) {
-        return "button";
-      } else if (variableMonitor.querySelector("input[type=\"file\"]")) {
-        return "file";
-      } else if (variableMonitor.querySelector("input[type=\"image\"]")) {
-        return "image";
-      } else if (variableMonitor.querySelector("audio")) {
-        return "audio";
-      } else if (variableMonitor.querySelector(".monitor_large-value_P-rAm")) {
-        return "large readout";
-      } else {
-        return "normal readout";
-      }
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
+      if (!variableMonitor) return "normal readout";
+      if (variableMonitor.querySelector("input[type=\"range\"]")) return "slider";
+      if (variableMonitor.querySelector("input[type=\"text\"]")) return "text";
+      if (variableMonitor.querySelector("input[type=\"checkbox\"]")) return "checkbox";
+      if (variableMonitor.querySelector("input[type=\"color\"]")) return "color";
+      if (variableMonitor.querySelector("input[type=\"button\"]")) return "button";
+      if (variableMonitor.querySelector("input[type=\"file\"]")) return "file";
+      if (variableMonitor.querySelector("img")) return "image";
+      if (variableMonitor.querySelector("audio")) return "audio";
+      if (variableMonitor.querySelector(`[class^="monitor_large-value_"]`)) return "large readout";
+      return "normal readout";
     }
 
     setSliderMinMaxOfVaribleTo(args, util) {
       const variableId = this.findVariable(args.VARIABLE, util);
-      this.resetFormat(variableId);
-      var state = vm.runtime.getMonitorState().get(variableId);
-      if (!state) {
-        return "";
+      if (!(this.getMonitor(args.VARIABLE, util).includes("readout") || this.getMonitor(args.VARIABLE, util) === "slider")) {
+        this.resetFormat(variableId);
       }
+      var state = vm.runtime.getMonitorState().get(variableId);
+      if (!state) return "";
       state = state.set("mode", "slider");
       runtime.requestUpdateMonitor(state);
       runtime.requestUpdateMonitor(new Map([
@@ -776,54 +806,50 @@
     sliderMinMaxOfVarible(args, util) {
       const variableId = this.findVariable(args.VARIABLE, util);
       const info = vm.runtime.getMonitorState().get(variableId);
-      if (info === undefined) {
-        return ""
-      }
-      if (args.MINMAX === "min") {
-        return info.get("sliderMin");
-      } else {
-        return info.get("sliderMax");
-      }
+      if (info === undefined) return "";
+      return info.get(args.MINMAX === "min" ? "sliderMin" : "sliderMax");
     }
 
-    setColor(args, util) {
-      this.setValue(args.VARIABLE, args.COLOR, util);
-    }
+    setColor(args, util) { this.setValue(args.VARIABLE, args.COLOR, util) }
+    setString(args, util) { this.setValue(args.VARIABLE, args.STRING, util) }
 
     setValue(variableN, value, util) {
       const variableName = variableN; 
-      const variable = util.target.lookupOrCreateVariable(
-        variableN, variableName);
+      const variable = util.target.lookupOrCreateVariable(variableN, variableName);
       variable.value = value;
+    }
+
+    reportVal(args, util) {
+      const variableId = this.findVariable(args.VARIABLE, util);
+      if (!variableId) return 0;
+      const variable = util.target.lookupVariableById(variableId);
+      return variable.value;
     }
 
     isShowing(args, util) {
       const variableId = this.findVariable(args.VARIABLE, util);
       const info = runtime.getMonitorState().get(variableId);
-      if (info) {
-        return (info.get("visible") !== undefined && info.get("visible") !== false);
-      } else {
-        return false;
-      }
+      return info ? (info.get("visible") !== undefined && info.get("visible") !== false) : false;
+    }
+    exists(args, util) {
+      const variableId = this.findVariable(args.VARIABLE, util);
+      return Scratch.Cast.toBoolean(variableId);
     }
 
     setPosition(args, util) {
-      const canvas = [runtime.stageWidth / 2, runtime.stageHeight / 2];
+      const canvas = [Scratch.vm.runtime.stageWidth / 2, Scratch.vm.runtime.stageHeight / 2];
       const variableId = this.findVariable(args.VARIABLE, util);
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
-      if (!variableMonitor) {
-        return;
-      }
-      const scaleSet = this.findScale(variableMonitor);
-      this.varEffect(args.VARIABLE, "scale", 100, util);
-      const sizeOffset = variableMonitor.getBoundingClientRect();
-      let x = Scratch.Cast.toNumber(args.X * 0.725) + canvas[0] - 5 - (sizeOffset.width / 2);
-      let y = canvas[1] - Scratch.Cast.toNumber(args.Y + 1) - 5 - (sizeOffset.height / 2);
-      this.varEffect(args.VARIABLE, "scale", scaleSet, util);
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
+      if (!variableMonitor) return;
+      let x = Scratch.Cast.toNumber(args.X) + canvas[0] - (variableMonitor.offsetWidth / 2);
+      let y = (Scratch.Cast.toNumber(args.Y) - canvas[1] + (variableMonitor.offsetHeight / 2)) * -1;
+      x = x - parseInt(variableMonitor.style.left);
+      y = y - parseInt(variableMonitor.style.top);
 
       let styleAttribute = variableMonitor.getAttribute("style");
       const transformRegex = /transform:([^;]+);/;
       const transformMatch = styleAttribute.match(transformRegex);
+
       if (transformMatch) {
         const existingTransform = transformMatch[1];
         const updatedTransform = existingTransform.replace(/translate\([^)]+\)/, `translate(${x}px, ${y}px)`);
@@ -832,42 +858,20 @@
       }
     }
 
-    findScale(variableMonitor) {
-      const currentTransform = variableMonitor.style.transform || "";
-      const regex = new RegExp(`scale\\(([^)]+)\\)`);
-      const transformMatch = currentTransform.match(regex);
-      if (transformMatch) {
-        const valueWithUnits = transformMatch[1];
-        const scale = parseFloat(valueWithUnits.replace(/[^0-9.-]/g, ""));
-        return scale * 100;
-      } else {
-        return 100;
-      }
-    }
-
     currentPos(args, util) {
-      const canvas = [runtime.stageWidth / 2, runtime.stageHeight / 2];
+      const canvas = [Scratch.vm.runtime.stageWidth / 2, Scratch.vm.runtime.stageHeight / 2];
       const variableId = this.findVariable(args.VARIABLE, util);
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
-      if (!variableMonitor) {
-        return "";
-      }
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
+      if (!variableMonitor) return "";
+
       const styleAttribute = variableMonitor.getAttribute("style");
       if (styleAttribute) {
         const match = styleAttribute.match(/transform\s*:\s*translate\((-?\d+(?:\.\d+)?px),\s*(-?\d+(?:\.\d+)?px)\)/);
         if (match) {
-          const scaleSet = this.findScale(variableMonitor);
-          this.varEffect(args.VARIABLE, "scale", 100, util);
-          const sizeOffset = variableMonitor.getBoundingClientRect();
-          let x = parseInt(match[1]);
-          let y = parseInt(match[2]);
-          x = x - canvas[0] + 5 + (sizeOffset.width / 2);
-          y = canvas[1] - y - 6 - (sizeOffset.height / 2);
-          this.varEffect(args.VARIABLE, "scale", scaleSet, util);
           if (args.POSITION === "x") {
-            return (x * 0.275) * 5.01 + 1; //variable width is dynamic so x position is hard to calculate exactly
+            return Math.round(parseInt(match[1]) - canvas[0] + (variableMonitor.offsetWidth / 2)) + parseInt(variableMonitor.style.left);
           } else {
-            return y < 162.6 ? y - 0.5 : y + 0.5;
+            return Math.round(((parseInt(match[2]) * -1) + canvas[1]) - (variableMonitor.offsetHeight / 2) - parseInt(variableMonitor.style.top)) - 1;
           }
         }
       }
@@ -875,28 +879,22 @@
     }
 
     resetEffects(variableId, currentTransform) {
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
-      if (!variableMonitor) {
-        return;
-      }
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
+      if (!variableMonitor) return;
       const translationRegex = /translate\(([^,]+),\s*([^)]+)\)/;
       const matches = currentTransform.match(translationRegex);
-      const translation = matches ? `translate(${matches[1]}, ${matches[2]})` : '';
+      const translation = matches ? `translate(${matches[1]}, ${matches[2]})` : "";
       variableMonitor.style.filter = "";
       variableMonitor.style.transform = translation;
     }
 
-    setEffect(args, util) {
-      this.varEffect(args.VARIABLE, args.EFFECT, args.AMOUNT, util);
-    }
+    setEffect(args, util) { this.varEffect(args.VARIABLE, args.EFFECT, args.AMOUNT, util) }
 
     varEffect(VARIABLE, EFFECT, AMOUNT, util) {
       const variableId = this.findVariable(VARIABLE, util);
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
-      if (!variableMonitor) {
-        return;
-      }
-      let currentTransform = variableMonitor.style.transform || "";
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
+      if (!variableMonitor) return;
+      let currentTransform = variableMonitor.style.transform;
       let currentFilterEffect = variableMonitor.style.filter || "";
       let setEffect = EFFECT;
       let amountIn = AMOUNT;
@@ -920,6 +918,7 @@
       const regex = new RegExp(`${setEffect}\\([^)]+\\)`, "g");
       currentTransform = currentTransform.replace(regex, "").trim();
       currentFilterEffect = currentFilterEffect.replace(regex, "").trim();
+
       if (setEffect === "scale" || setEffect === "rotate" || setEffect.includes("skew")) {
         currentTransform += ` ${setEffect}(${amountIn}${setEffect === "rotate" || setEffect.includes("skew") ? "deg" : ""})`;
         variableMonitor.style.transform = currentTransform.trim();
@@ -931,11 +930,9 @@
 
     currentEffect(args, util) {
       const variableId = this.findVariable(args.VARIABLE, util);
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
-      if (!variableMonitor) {
-        return "";
-      }
-      const currentTransform = variableMonitor.style.transform || "";
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
+      if (!variableMonitor) return "";
+      const currentTransform = variableMonitor.style.transform;
       const currentFilterEffect = variableMonitor.style.filter || "";
       const setEffect = {
         saturation: "saturate",
@@ -959,6 +956,7 @@
       const regex = new RegExp(`${setEffect}\\(([^)]+)\\)`);
       const transformMatch = currentTransform.match(regex);
       const filterMatch = currentFilterEffect.match(regex);
+
       if (filterMatch || transformMatch) {
         const valueWithUnits = (filterMatch || transformMatch)[1];
         const numericValue = parseFloat(valueWithUnits.replace(/[^0-9.-]/g, ""));
@@ -978,21 +976,57 @@
 
     resetEffect(args, util) {
       const variableId = this.findVariable(args.VARIABLE, util);
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
-      if (!variableMonitor) {
-        return;
-      }
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
+      if (!variableMonitor) return;
       let currentTransform = variableMonitor.style.transform || "";
       this.resetEffects(variableId, currentTransform);
     }
 
     setFont(args, util) {
       const variableId = this.findVariable(args.VARIABLE, util);
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
-      if (!variableMonitor) {
-        return;
-      }
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
+      if (!variableMonitor) return;
       variableMonitor.style.fontFamily = args.FONT;
+    }
+
+    makeVariable(args, util) {
+      if (args.TYPE === "for this sprite only") {
+        return util.target.lookupOrCreateVariable(this.generateId(), args.VARIABLE, "");
+      } else {
+        return runtime.createNewGlobalVariable(args.VARIABLE, "");
+      }
+    }
+
+    deleteVariable(args, util) {
+      const variableId = this.findVariable(args.VARIABLE, util);
+      if (variableId) {
+        runtime.getTargetForStage().deleteVariable(variableId)
+        util.target.deleteVariable(variableId);
+      }
+    }
+
+    generateId() {
+      const chars = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "/", "|", ",", ".", "{", "}", "[", "]", "(", ")", "+", "-", "!", "?", "`"];
+      const array = Array.from(Array(20).keys());
+      const normalArray = array.map(() => {
+        return chars[Math.round(Math.random() * (chars.length - 1))]
+      })
+      return normalArray.join("");
+    }
+
+    reAddDeleted(variable, id, name, util) {
+      const waitAndExecute = () => {
+        if (!this.isShowing({VARIABLE : name}, util)) {
+          setTimeout(waitAndExecute, 5);
+          return;
+        }
+        setTimeout(() => {
+          const variableMonitor = document.querySelector(`[data-id="${id}"][class*="monitor"]`);
+          const inlineStyles = variable.getAttribute("style");
+          if (variableMonitor.style) variableMonitor.style = inlineStyles;
+        }, 10);
+      };
+      waitAndExecute();
     }
   }
 

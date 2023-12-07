@@ -126,6 +126,9 @@ import pmSensingExpansionExtensionIcon from './penguinmod/extensions/sensing_exp
 // gsa: ololololololo
 import defaultExtensionIcon from './penguinmod/extensions/placeholder.png';
 
+//sharkpools extensions
+import spMonitorsPlusIcon from './sharkpool-extensions/Monitors-Plus.svg';
+
 const urlParams = new URLSearchParams(location.search);
 
 const IsLocal = String(window.location.href).startsWith(`http://localhost:`);
@@ -170,19 +173,19 @@ const menuItems = [
     {
         name: 'Monitors Plus',
         extensionId: 'https://snail-ide.js.org/Monitors-Plus.js',
-        iconURL: defaultExtensionIcon,
+        iconURL: 'https://sharkpools-extensions.vercel.app/extension-thumbs/Monitors-Plus.svg',
         collaborator: 'SharkPool',
         tags: ['penguinmod'],
-        description: 'W.I.P Description',
+        description: 'New variable blocks and new monitor types.',
         featured: true
     },
     {
         name: 'Lazy Collisions',
         extensionId: 'https://snail-ide.js.org/Lazy-Collisions.js',
-        iconURL: defaultExtensionIcon,
+        iconURL: 'https://sharkpools-extensions.vercel.app/extension-thumbs/Lazy-Collisions.svg',
         collaborator: 'SharkPool',
         tags: ['penguinmod'],
-        description: 'W.I.P Description',
+        description: 'Utility blocks that make detecting collisions easy and fast.',
         featured: true
     },
     {
@@ -191,16 +194,35 @@ const menuItems = [
         iconURL: 'https://sharkpools-extensions.vercel.app/extension-thumbs/Newgrounds-Audio.svg',
         collaborator: 'SharkPool',
         tags: ['penguinmod'],
-        description: 'W.I.P Description',
+        description: 'Fetch Audio and Audio Information from Newgrounds. Works best with Tune Shark',
         featured: true
     },
+    {
+        name: 'Tune Shark',
+        extensionId: 'https://sharkpools-extensions.vercel.app/extension-code/Tune-Shark.js',
+        iconURL: 'https://sharkpools-extensions.vercel.app/extension-thumbs/Tune-Shark.svg',
+        collaborator: 'SharkPool',
+        tags: ['penguinmod'],
+        description: 'Advanced Sound Engine for playing your sounds and more. Inspired by LilyMakesThings',
+        featured: true
+    },
+    {
+        name: 'Screensharing',
+        extensionId: 'https://thepython555.github.io/screen-sharing.js',
+        iconURL: 'https://thepython555.github.io/Screensharing.png', // please forgive me the text is slightly offcenter
+        collaborator: 'pooiod7',
+        tags: ['penguinmod'],
+        description: 'Share your screen and get the current frame as a image.',
+        featured: true
+    },
+    // TO-DO: elemental images maybe????? would probably make screensharing worth to use
     {
         name: 'Tile Grids',
         extensionId: 'https://sharkpools-extensions.vercel.app/extension-code/Tile-Grids.js',
         iconURL: 'https://sharkpools-extensions.vercel.app/extension-thumbs/Tile-Grids.svg',
         collaborator: 'SharkPool',
         tags: ['penguinmod'],
-        description: 'W.I.P Description',
+        description: 'Place Sprites on Tile Grids.',
         featured: true
     },
     {
