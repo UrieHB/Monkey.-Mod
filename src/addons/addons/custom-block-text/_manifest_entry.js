@@ -25,7 +25,7 @@ const manifest = {
       "url": "text-shadow.css",
       "if": {
         "settings": {
-          "shadow": false
+          "shadow": true
         }
       }
     }
