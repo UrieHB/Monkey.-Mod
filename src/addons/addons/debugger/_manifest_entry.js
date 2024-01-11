@@ -65,12 +65,12 @@ const manifest = {
       "name": "Log broadcasts",
       "id": "log_broadcasts",
       "type": "boolean",
-      "default": false
+      "default": true
     }
   ],
   "tags": [
     "beta"
   ],
-  "enabledByDefault": false
+  "enabledByDefault": true
 };
 export default manifest;

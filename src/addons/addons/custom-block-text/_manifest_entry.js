@@ -25,7 +25,7 @@ const manifest = {
       "url": "text-shadow.css",
       "if": {
         "settings": {
-          "shadow": true
+          "shadow": false
         }
       }
     }
@@ -36,7 +36,7 @@ const manifest = {
       "name": "Bold text",
       "id": "bold",
       "type": "boolean",
-      "default": false
+      "default": true
     },
     {
       "dynamic": true,
@@ -47,6 +47,6 @@ const manifest = {
     }
   ],
   "dynamicDisable": true,
-  "enabledByDefault": false
+  "enabledByDefault": true
 };
 export default manifest;
