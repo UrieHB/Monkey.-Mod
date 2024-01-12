@@ -25,7 +25,7 @@ const manifest = {
       "dynamic": true,
       "name": "Hide settings button when no controllers detected",
       "type": "boolean",
-      "default": false,
+      "default": true,
       "id": "hide"
     }
   ],
