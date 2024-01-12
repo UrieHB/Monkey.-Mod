@@ -1,10 +1,10 @@
 @import "../../css/colors.css";
 
 .green-flag {
-    width: 3.75rem;
-    height: 3.75rem;
+    width: 3.5rem;
+    height: 3.5rem;
     padding: 0.375rem;
-    border-radius: 0.10rem;
+    border-radius: 0.05rem;
     user-select: none;
     user-drag: none;
     cursor: pointer;
