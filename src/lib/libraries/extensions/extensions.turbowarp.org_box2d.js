@@ -1,4 +1,4 @@
-t/*!
+/*!
  * This is based on https://github.com/griffpatch/scratch-vm/tree/box2d/src/extensions/scratch3_griffpatch
  */
 
