@@ -54,17 +54,23 @@ const Credits = () => (
     <main className={styles.main}>
         <header className={styles.headerContainer}>
             <h1 className={styles.headerText}>
-                Snail IDE Credits
+                Turtle IDE Credits
             </h1>
         </header>
         <section>
-            <h1>Snail IDE</h1>
+            <h1>Turtle IDE</h1>
         </section>
         <section>
+            <p>Currently, Turtle IDE Is Mostly A Rebrand,
+                And some of this might be false.
+                for true info go to <a href="https://editor.snail-ide.com/credits.html">
+                here.
+            </a>
+            </p>
             <h2>Thank you</h2>
             <p>
-                Without TurboWarp and PenguinMod, Snail IDE may have never existed.
-                Thank you to everyone who worked on Scratch, TurboWarp, and PenguinMod
+                Without TurboWarp, PenguinMod, and Snail IDE, Turtle IDE may have never existed.
+                Thank you to everyone who worked on Scratch, TurboWarp, PenguinMod, and Snail IDE,
                 you have made many people finally be able to make whatever they can imagine.
             </p>
             <a href="https://scratch.mit.edu/donate">
@@ -76,7 +82,7 @@ const Credits = () => (
             </a>
             <h2>Contributors</h2>
             <p>
-                Snail IDE is made by a small bunch of developers.
+                Turtle IDE is made by one developer
                 A list is below, but you can also check <a href="https://github.com/orgs/Snail-IDE/people">our GitHub</a> incase this one is out of date.
             </p>
             <UserList users={UserData.pmDevelopers} />
@@ -94,18 +100,18 @@ const Credits = () => (
             </a>
             <h2>Domain Provider</h2>
             <p>
-                <a href="https://snail-ide.js.org">snail-ide.js.org</a> is provided by <a href="https://js.org">js.org</a>
+                Currently, Shared projects are uploaded to the Snail IDE Server
             </p>
             <h2>Sound Effects</h2>
             <p>
-                Snail IDE has added some more sounds to the Sound Library.
-                All Snail IDE sounds are
+                Snail IDE has a sound page.
+                All Turtle IDE sounds are from Snail IDE (
                 from <a href="https://freesound.org/">https://freesound.org/</a> and <a href="https://archive.org/">https://archive.org/</a> under
-                the Public Domain license.
+                the Public Domain license. )
             </p>
         </section>
         <section>
-            <h1>PenguinMod, TurboWarp and Snail IDE</h1>
+            <h1>PenguinMod, TurboWarp, Snail IDE and Turtle IDE</h1>
         </section>
         <section>
             <h2>Extensions</h2>
@@ -126,7 +132,7 @@ const Credits = () => (
             <h2>Addons</h2>
             <p>
                 Addons are mostly taken from <a href="https://scratchaddons.com/">Scratch Addons</a>,
-                but we hope to have some Snail IDE addons in the future.
+                but we hope to have some Turtle IDE addons in the future.
                 Here are the developers that made the current addons available.
             </p>
             <UserList users={UserData.addonDevelopers} />
