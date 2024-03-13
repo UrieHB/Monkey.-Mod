@@ -28,6 +28,7 @@ Windows
  * [ ] Chrome 
  * [ ] Firefox 
  * [ ] Edge
+ * [ ] Supermium
  
 Chromebook
  * [ ] Chrome
