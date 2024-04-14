@@ -1627,6 +1627,24 @@ if (IsLocal || IsLiveTests) {
         description: "Get data from a Discord user!",
         featured: true
     },
+{
+        name: 'Git Penguin',
+        extensionId: 'https://justablock.online/extensions/gitpenguin.js',
+        collaborator: justablock,
+        iconURL: 'https://editor.snail-ide.com/gitpenguin.pmg',
+        tags: ['penguinmod'],
+        description: "Get data from Github repositorys!",
+        featured: true
+    },
+{
+        name: 'Turbo SMS',
+        extensionId: 'https://justablock.online/extensions/TurboSMS.js',
+        collaborator: justablock,
+        iconURL: 'https://editor.snail-ide.com/turbosms',
+        tags: ['penguinmod'],
+        description: "Send texts to the user!",
+        featured: true
+    },
     ];
     extras.forEach(ext => {
         menuItems.push(ext);
